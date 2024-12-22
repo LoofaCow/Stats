@@ -118,6 +118,8 @@ jQuery(async () => {
   $("#extensions_settings").append(settingsHtml);
 
   $("#reset-stats-button").on("click", resetStats);
+  $(document).on('click', '#objectiveExtensionPopoutButton', function (e) {
+        doPopout(e);
 
   await loadSettings();
 });
