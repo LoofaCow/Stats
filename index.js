@@ -2,6 +2,7 @@
 // Import dependencies
 import { extension_settings, getContext, loadExtensionSettings } from "../../../extensions.js";
 import { saveSettingsDebounced } from "../../../../script.js";
+import { loadMovingUIState } from '../../../../scripts/power-user.js';
 
 // Constants
 const extensionName = "Stats";
@@ -116,6 +117,9 @@ function doPopout(e) {
 jQuery(async () => {
   const settingsHtml = await $.get(`${extensionFolderPath}/example.html`);
   $("#extensions_settings").append(settingsHtml);
+  $(document).on('click', '#objectiveExtensionPopoutButton', function (e) {
+        doPopout(e);
+        e.stopPropagation();
 
   $("#reset-stats-button").on("click", resetStats);
 
