@@ -7,7 +7,7 @@ import { saveSettingsDebounced } from "../../../../script.js";
 const extensionName = "Stats";
 const extensionFolderPath = `scripts/extensions/third-party/${extensionName}`;
 const defaultStats = {
-  name: "Unknown",
+  name: "Trevor",
   health: 100,
   mana: 50,
   attributes: {
@@ -72,7 +72,7 @@ jQuery(async () => {
   const settingsHtml = await $.get(`${extensionFolderPath}/example.html`);
   $("#extensions_settings").append(settingsHtml);
 
-  $("#reset-rpg-stats-button").on("click", resetStats);
+  $("#reset-stats-button").on("click", resetStats);
 
   await loadSettings();
 });
