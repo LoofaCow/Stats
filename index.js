@@ -1,7 +1,7 @@
-// Stats Script
-// Import dependencies
+// Updated index.js for dynamic stats updating
+
 import { extension_settings, getContext, loadExtensionSettings } from "../../../extensions.js";
-import { saveSettingsDebounced } from "../../../../script.js";
+import { saveSettingsDebounced, eventSource, event_types } from "../../../../script.js";
 
 // Constants
 const extensionName = "Stats";
@@ -67,6 +67,44 @@ function resetStats() {
   updateStatsUI();
 }
 
+// Handle incoming updates
+function handleStatUpdates(newStats) {
+  const stats = extension_settings[extensionName];
+
+  if (newStats.name) stats.name = newStats.name;
+  if (newStats.health !== undefined) stats.health = newStats.health;
+  if (newStats.mana !== undefined) stats.mana = newStats.mana;
+  if (newStats.attributes) {
+    Object.keys(newStats.attributes).forEach(attr => {
+      stats.attributes[attr] = newStats.attributes[attr];
+    });
+  }
+  if (newStats.inventory) stats.inventory = newStats.inventory;
+  if (newStats.skills) stats.skills = newStats.skills;
+  if (newStats.relationships) stats.relationships = newStats.relationships;
+  if (newStats.journal) stats.journal = newStats.journal;
+
+  saveSettingsDebounced();
+  updateStatsUI();
+}
+
+// Listen for events
+function listenForUpdates() {
+  eventSource.on(event_types.MESSAGE_RECEIVED, (data) => {
+    const message = data.message;
+
+    // Example: Parse message for a level-up event
+    if (message.includes("You have leveled up")) {
+      extension_settings[extensionName].attributes.strength += 1;
+    }
+
+    // Add other parsing logic for stats updates here
+
+    // Call stat handler with new data
+    handleStatUpdates({ health: Math.random() * 100 }); // Example dynamic update
+  });
+}
+
 // Initialize the extension
 jQuery(async () => {
   const settingsHtml = await $.get(`${extensionFolderPath}/example.html`);
@@ -75,4 +113,5 @@ jQuery(async () => {
   $("#reset-stats-button").on("click", resetStats);
 
   await loadSettings();
+  listenForUpdates();
 });
