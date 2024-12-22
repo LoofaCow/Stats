@@ -1,11 +1,11 @@
 {
-    "display_name": "Adventure Stats",
+    "display_name": "Stats",
     "loading_order": 9,
     "requires": [],
     "optional": [],
     "js": "index.js",
     "css": "style.css",
-    "author": "yourNameHere",
+    "author": "Trevor",
     "version": "1.0.0",
-    "homePage": "yourUrlHere"
+    "homePage": "https://github.com/LoofaCow/Stats"
 }
