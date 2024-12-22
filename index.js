@@ -1,10 +1,10 @@
-// RPG Stats Tracker Script
+// Stats Script
 // Import dependencies
 import { extension_settings, getContext, loadExtensionSettings } from "../../../extensions.js";
 import { saveSettingsDebounced } from "../../../../script.js";
 
 // Constants
-const extensionName = "rpg-stats-tracker";
+const extensionName = "Stats";
 const extensionFolderPath = `scripts/extensions/third-party/${extensionName}`;
 const defaultStats = {
   name: "Unknown",
