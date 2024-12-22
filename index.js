@@ -69,7 +69,7 @@ function resetStats() {
 
 // Initialize the extension
 jQuery(async () => {
-  const settingsHtml = await $.get(`${extensionFolderPath}/rpg-stats-tracker.html`);
+  const settingsHtml = await $.get(`${extensionFolderPath}/example.html`);
   $("#extensions_settings").append(settingsHtml);
 
   $("#reset-rpg-stats-button").on("click", resetStats);
