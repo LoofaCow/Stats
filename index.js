@@ -1,63 +1,78 @@
-// The main script for the extension
-// The following are examples of some basic extension functionality
-
-//You'll likely need to import extension_settings, getContext, and loadExtensionSettings from extensions.js
+// RPG Stats Tracker Script
+// Import dependencies
 import { extension_settings, getContext, loadExtensionSettings } from "../../../extensions.js";
-
-//You'll likely need to import some other functions from the main script
 import { saveSettingsDebounced } from "../../../../script.js";
 
-// Keep track of where your extension is located, name should match repo name
-const extensionName = "Adventure Stats";
+// Constants
+const extensionName = "rpg-stats-tracker";
 const extensionFolderPath = `scripts/extensions/third-party/${extensionName}`;
-const extensionSettings = extension_settings[extensionName];
-const defaultSettings = {};
+const defaultStats = {
+  name: "Unknown",
+  health: 100,
+  mana: 50,
+  attributes: {
+    strength: 10,
+    dexterity: 10,
+    intelligence: 10,
+  },
+  inventory: ["Health Potion x2", "Mana Potion x1"],
+  skills: ["Fireball", "Heal"],
+  relationships: [
+    { name: "Villager", status: "Friendly" },
+    { name: "Merchant", status: "Neutral" },
+  ],
+  journal: ["Started a journey into the dark forest."],
+};
 
-
- 
-// Loads the extension settings if they exist, otherwise initializes them to the defaults.
+// Initialize settings
 async function loadSettings() {
-  //Create the settings if they don't exist
   extension_settings[extensionName] = extension_settings[extensionName] || {};
   if (Object.keys(extension_settings[extensionName]).length === 0) {
-    Object.assign(extension_settings[extensionName], defaultSettings);
+    Object.assign(extension_settings[extensionName], defaultStats);
   }
-
-  // Updating settings in the UI
-  $("#example_setting").prop("checked", extension_settings[extensionName].example_setting).trigger("input");
+  updateStatsUI();
 }
 
-// This function is called when the extension settings are changed in the UI
-function onExampleInput(event) {
-  const value = Boolean($(event.target).prop("checked"));
-  extension_settings[extensionName].example_setting = value;
+// Update the UI with stats
+function updateStatsUI() {
+  const stats = extension_settings[extensionName];
+
+  $("#character-name").text(stats.name);
+  $("#health").text(stats.health);
+  $("#mana").text(stats.mana);
+
+  $("#attribute-strength").text(stats.attributes.strength);
+  $("#attribute-dexterity").text(stats.attributes.dexterity);
+  $("#attribute-intelligence").text(stats.attributes.intelligence);
+
+  const inventoryHtml = stats.inventory.map(item => `<li>${item}</li>`).join("");
+  $("#inventory").html(inventoryHtml);
+
+  const skillsHtml = stats.skills.map(skill => `<li>${skill}</li>`).join("");
+  $("#skills").html(skillsHtml);
+
+  const relationshipsHtml = stats.relationships
+    .map(rel => `<li>${rel.name}: ${rel.status}</li>`)
+    .join("");
+  $("#relationships").html(relationshipsHtml);
+
+  const journalHtml = stats.journal.map(entry => `<li>${entry}</li>`).join("");
+  $("#journal").html(journalHtml);
+}
+
+// Reset stats to default
+function resetStats() {
+  extension_settings[extensionName] = { ...defaultStats };
   saveSettingsDebounced();
+  updateStatsUI();
 }
 
-// This function is called when the button is clicked
-function onButtonClick() {
-  // You can do whatever you want here
-  // Let's make a popup appear with the checked setting
-  toastr.info(
-    `The checkbox is ${extension_settings[extensionName].example_setting ? "checked" : "not checked"}`,
-    "A popup appeared because you clicked the button!"
-  );
-}
-
-// This function is called when the extension is loaded
+// Initialize the extension
 jQuery(async () => {
-  // This is an example of loading HTML from a file
-  const settingsHtml = await $.get(`${extensionFolderPath}/example.html`);
-
-  // Append settingsHtml to extensions_settings
-  // extension_settings and extensions_settings2 are the left and right columns of the settings menu
-  // Left should be extensions that deal with system functions and right should be visual/UI related 
+  const settingsHtml = await $.get(`${extensionFolderPath}/rpg-stats-tracker.html`);
   $("#extensions_settings").append(settingsHtml);
 
-  // These are examples of listening for events
-  $("#my_button").on("click", onButtonClick);
-  $("#example_setting").on("input", onExampleInput);
+  $("#reset-rpg-stats-button").on("click", resetStats);
 
-  // Load settings when starting things up (if you have any)
-  loadSettings();
+  await loadSettings();
 });
